@@ -1,0 +1,20 @@
+{
+  "name": "xtadechat",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Xtadere",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.22.2",
+    "nodemon": "^3.1.14",
+    "socket.io": "^4.8.3",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1"
+  }
+}
