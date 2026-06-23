@@ -18,7 +18,7 @@
       </div>
       <div class="d-flex justify-content-center">
         <span>Есть аккаунт?</span>
-        <router-link to="register">Вход</router-link>
+        <router-link to="auth">Вход</router-link>
       </div>
       <button type="submit" class="btn btn-primary">Регистрация</button>
     </form>
@@ -26,14 +26,16 @@
 </template>
 
 <script>
-import {ref, reactive} from 'vue'
+import {reactive} from 'vue'
 import {useRouter} from 'vue-router'
 import {registration} from '../../http/userApi.js'
+import { useUserStore } from '@/stores/userStore.js';
 
 export default {
   name: 'Register',
   setup() {
     const router = useRouter()
+    const userStore = useUserStore()
 
     const form = reactive({
       login: '',
@@ -49,8 +51,11 @@ export default {
         form.password,
         form.login
       )
-        console.log('Регистрация успешна:', result)
-        router.push('/auth')
+
+      userStore.login(result.user)
+
+      console.log('Регистрация успешна:', result)
+      router.push('/')
 
     } catch (e) {
       console.log(e)

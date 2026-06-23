@@ -12,27 +12,26 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ms-auto d-flex gap-3 align-items-center">
-          <b-nav-item v-if="_isAuth" to="/" class="nav-link-custom px-3 py-2 rounded">
+          <b-nav-item v-if="isAuth" to="/" class="nav-link-custom px-3 py-2 rounded">
             <i class="bi bi-house me-1"></i>
             <span>Главная</span>
           </b-nav-item>
 
-          <b-nav-item v-if="!_isAuth" to="/auth" class="nav-link-custom px-3 py-2 rounded">
+          <b-nav-item v-if="!isAuth" to="/auth" class="nav-link-custom px-3 py-2 rounded">
             <i class="bi bi-box-arrow-in-right me-1"></i>
             <span>Вход</span>
           </b-nav-item>
 
-          <b-nav-item v-if="!_isAuth" to="/register" class="nav-link-custom px-3 py-2 rounded">
+          <b-nav-item v-if="!isAuth" to="/register" class="nav-link-custom px-3 py-2 rounded">
             <i class="bi bi-person-plus me-1"></i>
             <span>Регистрация</span>
           </b-nav-item>
 
-          <b-nav-item v-if="_isAuth" class="nav-link-custom px-3 py-2 rounded">
+          <b-nav-item v-if="isAuth" @click="handleLogout()" class="nav-link-custom px-3 py-2 rounded">
             <i class="bi bi-box-arrow-right me-1"></i>
             <span>Выход</span>
           </b-nav-item>
 
-          <!-- Аватарка пользователя -->
           <b-avatar variant="primary" size="md" class="ms-2" text="U"></b-avatar>
         </b-navbar-nav>
       </b-collapse>
@@ -42,16 +41,27 @@
 
 <script>
 import { useUserStore } from '@/stores/userStore'
-import { computed } from 'vue'
-
+import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 export default {
   name: 'Header',
   setup() {
     const userStore = useUserStore()
+    const router = useRouter()
+    const {_isAuth} = storeToRefs(userStore)
 
     userStore.checkAuth()
 
-    return userStore
+    const handleLogout = async () => {
+      await userStore.logout()
+      router.push('/auth')
+      userStore.checkAuth()
+    }
+
+    return {
+      isAuth: _isAuth,
+      handleLogout
+    }
   },
 }
 </script>
