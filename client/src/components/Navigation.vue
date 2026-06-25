@@ -1,24 +1,21 @@
 <template>
   <div class="bg-dark text-white p-3 vh-100">
-    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-secondary">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-secondary flex-column gap-3">
       <p class="fw-bold fs-5 mb-0">
         <i class="bi bi-chat-dots me-2"></i>
         Ваши чаты
       </p>
-      <b-button variant="outline-primary" @click="handleGetUsers">Найти</b-button>
+      <b-button variant="outline-primary" class="w-100" @click="handleGetUsers">Найти</b-button>
     </div>
-    
-    <!-- Добавляем проверку на существование и длину -->
-    <div>
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 flex-column gap-3">
       <div v-if="chatStore.navChats && chatStore.navChats.length === 0" class="text-secondary text-center mt-4">
         <i class="bi bi-inbox fs-1 d-block mb-2"></i>
         У вас нет активных чатов
       </div>
-      <li v-for="chat in chatStore.navChats" :key="chat.id">
+      <b-button class="w-100" v-for="chat in chatStore.navChats" :key="chat.id">
         {{ chat.name }}
-      </li>
+      </b-button>
     </div>
-    
     <ChatModal 
       v-model:show="modalShow" 
       title="Список пользователей" 
@@ -29,11 +26,18 @@
 
 <script setup>
 import { useChatStore } from '@/stores/chatStore';
-import { ref } from 'vue';
+import { useUserStore } from '@/stores/userStore.ts';
+import { ref, onMounted } from 'vue';
 import ChatModal from '@/components/Modal.vue';
 
 const chatStore = useChatStore();
+const userStore = useUserStore()
+
 const modalShow = ref(false);
+
+onMounted(async () => {
+    await chatStore.getUserChats(userStore.user.id)
+})
 
 const handleGetUsers = async () => {
   await chatStore.getUsers();

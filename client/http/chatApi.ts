@@ -31,7 +31,6 @@ export const fetch_chats = async (userId: number) => {
     const { data } = await api.get('/chat/check', {
       params: {user_id: userId}
     })
-    console.log('Успешное получение', data)
     return data
   } catch (error: unknown) {
     console.error('Ошибка получения чатов:', error)

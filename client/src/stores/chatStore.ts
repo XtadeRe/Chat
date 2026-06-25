@@ -1,11 +1,26 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 import { ref } from "vue";
-import {fetch_users, createChat, fetch_chats} from "../../http/chatApi.ts"
+import { fetch_users, createChat, fetch_chats } from "../../http/chatApi.ts"
 
-export const useChatStore =  defineStore('chat', () => {
+
+interface Chat {
+    id: number;
+    name?: string;
+    is_private: boolean;
+    last_message_id: number;
+    createdAt: string;
+    updatedAt: string;
+}
+interface User {
+    id: number;
+    login: string;
+    role: string;
+}
+
+export const useChatStore = defineStore('chat', () => {
     
-    const allUsers = ref([])
-    const navChats = ref([])
+    const allUsers = ref<User[]>([])
+    const navChats = ref<Chat[]>([])
 
     async function getUsers() {
         allUsers.value = await fetch_users();
@@ -13,9 +28,9 @@ export const useChatStore =  defineStore('chat', () => {
 
     async function addNavUser(authUserId: number, secondUserId: number) {
         try {
-        await createChat(authUserId, secondUserId)
-        console.error("Успешно")
-
+            await createChat(authUserId, secondUserId)
+            console.log("Успешно")
+            await getUserChats(authUserId)
         } catch (e) {
             console.error(e)
         }
@@ -28,8 +43,11 @@ export const useChatStore =  defineStore('chat', () => {
 
     return {
         allUsers,
+        navChats,
         addNavUser,
         getUserChats,
         getUsers
     }
+}, {
+    persist: true
 })

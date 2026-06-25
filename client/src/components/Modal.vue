@@ -8,7 +8,7 @@
             <i class="bi bi-person-circle me-2" style="flex-shrink: 0;"></i>
             <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ user.login }}</span>
           </div>
-          <b-button style="white-space: nowrap; padding: 4px 12px;" variant="outline-primary" @click="chatStore.addNavUser(userStore.user.id, user.id)">Создать чат</b-button>
+          <b-button style="white-space: nowrap; padding: 4px 12px;" variant="outline-primary" @click="create(userStore.user.id, user.id)">Создать чат</b-button>
         </li>
       </ul>
     </div>
@@ -25,6 +25,13 @@ import { useChatStore } from '@/stores/chatStore';
 
 const userStore = useUserStore();
 const chatStore = useChatStore();
+
+const create = async (userId, secondUserId) => {
+  await chatStore.addNavUser(userId, secondUserId)
+  await chatStore.getUserChats(userStore.user.id)
+
+
+}
 
 const props = defineProps({
   show: {

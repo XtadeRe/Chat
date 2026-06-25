@@ -29,8 +29,8 @@
 
 <script>
 import { reactive } from 'vue';
-import {loginUser} from '../../http/userApi.js'
-import { useUserStore } from '@/stores/userStore.js';
+import {loginUser} from '../../http/userApi.ts'
+import { useUserStore } from '@/stores/userStore.ts';
 import { useRouter } from 'vue-router';
 
 export default {
