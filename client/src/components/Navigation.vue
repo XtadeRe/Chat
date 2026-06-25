@@ -1,32 +1,45 @@
 <template>
   <div class="bg-dark text-white p-3 vh-100">
-    <div
-      class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-secondary"
-    >
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-secondary">
       <p class="fw-bold fs-5 mb-0">
         <i class="bi bi-chat-dots me-2"></i>
         Ваши чаты
       </p>
-      <span class="badge bg-primary rounded-pill">3</span>
+      <b-button variant="outline-primary" @click="handleGetUsers">Найти</b-button>
     </div>
-
-    <b-nav vertical class="w-100">
-      <b-nav-item class="nav-item-custom text-white py-2 px-3 rounded">
-        <i class="bi bi-person-circle me-2"></i>
-        Пользователь 1
-        <span class="badge bg-success rounded-pill ms-2">онлайн</span>
-      </b-nav-item>
-      <b-nav-item class="nav-item-custom text-white-50 py-2 px-3 rounded">
-        <i class="bi bi-person-circle me-2"></i>
-        Пользователь 2
-      </b-nav-item>
-      <b-nav-item class="nav-item-custom text-white-50 py-2 px-3 rounded">
-        <i class="bi bi-person-circle me-2"></i>
-        Пользователь 3
-      </b-nav-item>
-    </b-nav>
+    
+    <!-- Добавляем проверку на существование и длину -->
+    <div>
+      <div v-if="chatStore.navChats && chatStore.navChats.length === 0" class="text-secondary text-center mt-4">
+        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+        У вас нет активных чатов
+      </div>
+      <li v-for="chat in chatStore.navChats" :key="chat.id">
+        {{ chat.name }}
+      </li>
+    </div>
+    
+    <ChatModal 
+      v-model:show="modalShow" 
+      title="Список пользователей" 
+      :users="chatStore.allUsers?.users || chatStore.allUsers || []" 
+    />
   </div>
 </template>
+
+<script setup>
+import { useChatStore } from '@/stores/chatStore';
+import { ref } from 'vue';
+import ChatModal from '@/components/Modal.vue';
+
+const chatStore = useChatStore();
+const modalShow = ref(false);
+
+const handleGetUsers = async () => {
+  await chatStore.getUsers();
+  modalShow.value = true;
+};
+</script>
 
 <style scoped>
 .nav-item-custom {
@@ -46,9 +59,3 @@
   color: white !important;
 }
 </style>
-
-<script>
-export default {
-  name: 'Navigation',
-}
-</script>

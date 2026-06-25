@@ -13,8 +13,8 @@ const User = sequelize.define("users", {
 const Chats = sequelize.define("chats", {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
   name: { type: DataTypes.STRING, defaultValue: null },
-  is_private: { type: DataTypes.BOOLEAN },
-  last_message_id: { type: DataTypes.INTEGER },
+  is_private: { type: DataTypes.BOOLEAN, defaultValue: true },
+  last_message_id: { type: DataTypes.INTEGER, defaultValue: null },
 });
 
 const Chat_Participants = sequelize.define(

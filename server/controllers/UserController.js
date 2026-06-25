@@ -83,7 +83,7 @@ class UserController {
 
       return res.json({
         message: "Успешная авторизация",
-        user: { login: user.login, role: user.role },
+        user: { id: user.id, login: user.login, role: user.role },
       });
     } catch (e) {
       return res.status(500).json({
@@ -118,7 +118,7 @@ class UserController {
 
       const checkUserDatabase = await User.findOne({
         where: { email: decoded.email },
-        attributes: ["email", "login", "role"],
+        attributes: ["id", "email", "login", "role"],
       });
 
       if (!checkUserDatabase) {

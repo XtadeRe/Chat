@@ -35,7 +35,7 @@ async function main() {
     await sequelize.authenticate();
     await sequelize.sync({ alter: true });
   } catch (e) {
-    console.log(`Error: ${err}!!!`);
+    console.log(`Error: ${e}!!!`);
   }
   server.listen(PORT, () => {
     console.log("server running http://localhost:3000");

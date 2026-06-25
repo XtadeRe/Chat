@@ -19,7 +19,6 @@
   overflow: hidden;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
   .main-block {
     height: auto;
@@ -32,15 +31,7 @@
 }
 </style>
 
-<script>
+<script setup>
 import Navigation from '../components/Navigation.vue'
 import Chat from '../components/Chat.vue'
-
-export default {
-  name: 'App',
-  components: {
-    Navigation,
-    Chat,
-  },
-}
 </script>

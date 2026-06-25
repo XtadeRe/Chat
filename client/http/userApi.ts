@@ -1,11 +1,6 @@
 import axios from 'axios'
+import {api} from "./index"
 
-const API_URL = 'http://localhost:3000/api'
-
-const api = axios.create({
-  baseURL: API_URL,
-  withCredentials: true,
-})
 
 export const registration = async (email: string, password: string, login: string) => {
   try {

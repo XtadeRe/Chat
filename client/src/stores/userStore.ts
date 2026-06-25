@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import {checkUser, logoutUser} from "../../http/userApi.ts"
 
 
@@ -35,10 +35,6 @@ export const useUserStore = defineStore('user', () => {
       return false
     }
   }
-
-  // async function getUserChats() {
-
-  // }
 
   function login(userData: any) {
     _isAuth.value = true
