@@ -33,5 +33,5 @@
 
 <script setup>
 import Navigation from '../components/Navigation.vue'
-import Chat from '../components/Chat.vue'
+import Chat from '@/components/Chat.vue';
 </script>

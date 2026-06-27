@@ -31,7 +31,7 @@
             <i class="bi bi-box-arrow-right me-1"></i>
             <span>Выход</span>
           </b-nav-item>
-
+          <b-item class="nav-link-custom px-3 py-2 rounded" v-if="userStore.user"><span>Добро пожаловать! {{ userStore.user.login }}</span></b-item>
           <b-avatar variant="primary" size="md" class="ms-2" text="U"></b-avatar>
         </b-navbar-nav>
       </b-collapse>
@@ -60,6 +60,7 @@ export default {
 
     return {
       isAuth: _isAuth,
+      userStore,
       handleLogout
     }
   },

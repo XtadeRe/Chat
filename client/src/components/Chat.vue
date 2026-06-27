@@ -1,49 +1,32 @@
-<!-- src/components/Chat.vue -->
 <template>
+  <div v-if="chatStore.messageToUser">
+      <h3>В чате с {{ chatStore.messageToUser.login }}</h3>
+    </div>
+    <div v-else>
+      <h3>Выберите собеседника</h3>
+    </div>
   <div class="chat-wrapper">
-    <!-- Сообщения -->
     <div class="messages-block bg-light rounded p-3">
-      <div v-if="messages.length === 0" class="empty-state">
+      <div>
         <i class="bi bi-chat-dots display-1 text-muted"></i>
         <p class="text-muted mt-3">Нет сообщений. Начните диалог!</p>
       </div>
-
-      <div v-else class="messages-list">
-        <div
-          v-for="(message, index) in messages"
-          :key="index"
-          class="message-item mb-2"
-          :class="{ 'message-own': message.isOwn }"
-        >
-          <div class="message-bubble">
-            <div class="message-header d-flex justify-content-between align-items-center">
-              <strong class="message-author">{{ message.author }}</strong>
-              <small class="text-muted">{{ message.time }}</small>
-            </div>
-            <p class="message-text mb-0">{{ message.text }}</p>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- Поле ввода -->
     <div class="input-area mt-3">
       <div class="input-group">
         <input
-          v-model="newMessage"
           type="text"
+          v-model="messageInput"
           class="form-control rounded-start"
           placeholder="Введите сообщение..."
-          aria-describedby="button-addon2"
-          @keyup.enter="sendMessage"
-        />
+          aria-describedby="button-addon2"/>
         <button
           class="btn btn-primary"
           type="button"
           id="button-addon2"
-          @click="sendMessage"
-          :disabled="!newMessage.trim()"
-        >
+          @click="sendMessage()"
+          >
           <i class="bi bi-send me-2"></i>
           Отправить
         </button>
@@ -51,6 +34,23 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { useChatStore } from '@/stores/chatStore';
+import { io } from 'socket.io-client';
+import { ref } from 'vue';
+
+const socket = io('http://localhost:3000');
+
+const chatStore = useChatStore();
+const messageInput = ref('');
+
+const sendMessage = async () => {
+    socket.emit('chat message', messageInput.value);
+    messageInput.value = '';
+}
+
+</script>
 
 <style scoped>
 .chat-wrapper {
@@ -68,7 +68,6 @@
   border-radius: 12px;
 }
 
-/* Стили для пустого состояния */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -78,7 +77,6 @@
   min-height: 300px;
 }
 
-/* Стили для сообщений */
 .messages-list {
   padding: 10px;
 }
@@ -209,96 +207,4 @@
 }
 </style>
 
-<script>
-export default {
-  name: 'Chat',
-  data() {
-    return {
-      newMessage: '',
-      messages: [
-        {
-          author: 'Пользователь 1',
-          text: 'Привет! Как дела?',
-          time: '10:30',
-          isOwn: false,
-        },
-        {
-          author: 'Вы',
-          text: 'Привет! Все отлично, спасибо!',
-          time: '10:32',
-          isOwn: true,
-        },
-        {
-          author: 'Пользователь 1',
-          text: 'Отлично! Есть новости по проекту?',
-          time: '10:33',
-          isOwn: false,
-        },
-      ],
-    }
-  },
-  methods: {
-    sendMessage() {
-      const text = this.newMessage.trim()
-      if (!text) return
 
-      // Добавляем сообщение
-      this.messages.push({
-        author: 'Вы',
-        text: text,
-        time: this.getCurrentTime(),
-        isOwn: true,
-      })
-
-      // Очищаем поле
-      this.newMessage = ''
-
-      // Скроллим вниз
-      this.$nextTick(() => {
-        const container = this.$el.querySelector('.messages-block')
-        container.scrollTop = container.scrollHeight
-      })
-
-      // Имитация ответа (опционально)
-      this.simulateReply()
-    },
-
-    getCurrentTime() {
-      const now = new Date()
-      const hours = String(now.getHours()).padStart(2, '0')
-      const minutes = String(now.getMinutes()).padStart(2, '0')
-      return `${hours}:${minutes}`
-    },
-
-    simulateReply() {
-      // Автоматический ответ для демонстрации
-      const replies = [
-        'Отлично!',
-        'Понял, спасибо!',
-        'Хорошо, учту',
-        'Будет сделано',
-        'Ок, договорились',
-      ]
-
-      // Добавляем ответ через 1-2 секунды
-      setTimeout(
-        () => {
-          const randomReply = replies[Math.floor(Math.random() * replies.length)]
-          this.messages.push({
-            author: 'Пользователь 1',
-            text: randomReply,
-            time: this.getCurrentTime(),
-            isOwn: false,
-          })
-
-          this.$nextTick(() => {
-            const container = this.$el.querySelector('.messages-block')
-            container.scrollTop = container.scrollHeight
-          })
-        },
-        1000 + Math.random() * 1000,
-      )
-    },
-  },
-}
-</script>

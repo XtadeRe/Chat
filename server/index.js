@@ -15,8 +15,31 @@ const sequelize = require("./db");
 const models = require("./models/model");
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+
 const PORT = process.env.PORT || 3000;
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+    methods: ["GET", "POST"],
+  },
+  allowEIO3: true,
+});
+
+io.on("connection", (socket) => {
+  console.log(`a ${os.hostname()} connected`);
+
+  socket.on("chat message", (msg) => {
+    console.log("message: " + msg);
+
+    io.emit("chat message", {
+      id: socket.id,
+      message: msg,
+      timestamp: new Date(),
+    });
+  });
+});
 
 app.use(cookieParser());
 app.use(

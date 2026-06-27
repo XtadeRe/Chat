@@ -12,8 +12,9 @@
         <i class="bi bi-inbox fs-1 d-block mb-2"></i>
         У вас нет активных чатов
       </div>
-      <b-button class="w-100" v-for="chat in chatStore.navChats" :key="chat.id">
-        {{ chat.name }}
+      <b-button class="w-100" v-for="(chat, index) in chatStore.navChats" :key="chat.id" @click="chatStore.getOneChatInfo(chat.id, userStore.user.id)">
+        {{ chat.name }} {{ index + 1 }}
+        {{ console.log(chat.id) }}
       </b-button>
     </div>
     <ChatModal 

@@ -37,3 +37,17 @@ export const fetch_chats = async (userId: number) => {
     throw error
   }
 }
+
+export const fetch_one = async (chatId: number, authUserId: number) => {
+  try {
+    const { data } = await api.get('/chat/message', {
+      params: {
+        chat_id: chatId,
+        auth_userId: authUserId
+      }
+    })
+    return data
+  } catch (error: unknown) {
+    console.error('Ошибка получения чата:', error)
+  }
+}

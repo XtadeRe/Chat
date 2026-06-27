@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { fetch_users, createChat, fetch_chats } from "../../http/chatApi.ts"
+import { fetch_users, createChat, fetch_chats, fetch_one } from "../../http/chatApi.ts"
 
 
 interface Chat {
@@ -21,6 +21,7 @@ export const useChatStore = defineStore('chat', () => {
     
     const allUsers = ref<User[]>([])
     const navChats = ref<Chat[]>([])
+    const messageToUser = ref<User | null>(null)
 
     async function getUsers() {
         allUsers.value = await fetch_users();
@@ -41,10 +42,18 @@ export const useChatStore = defineStore('chat', () => {
         navChats.value = result.chats
     }
 
+    async function getOneChatInfo(chatId: number, authUserId: number) {
+        const result = await fetch_one(chatId, authUserId)
+        console.log(result.user)
+        messageToUser.value = result.user
+    }
+
     return {
         allUsers,
+        messageToUser,
         navChats,
         addNavUser,
+        getOneChatInfo,
         getUserChats,
         getUsers
     }

@@ -99,6 +99,65 @@ class ChatController {
       });
     }
   }
+
+  async getOneChatInfo(req, res) {
+    try {
+      const chatId = req.query.chat_id;
+      const authUserId = req.query.auth_userId;
+
+      if (!chatId) {
+        return res.status(400).json({
+          message: "Не передан chat_id",
+        });
+      }
+
+      const participants = await Chat_Participants.findAll({
+        where: { chat_id: chatId },
+        attributes: ["user_id"],
+      });
+
+      if (!participants || participants.length === 0) {
+        return res.status(404).json({
+          message: "Участники не найдены",
+        });
+      }
+
+      const userIds = participants.map((p) => p.user_id);
+      console.log(userIds);
+
+      const targetUserId = userIds.find((id) => id != authUserId);
+
+      if (!targetUserId) {
+        return res.status(404).json({
+          message: "Собеседник не найден",
+        });
+      }
+
+      const user = await User.findOne({ where: { id: targetUserId } });
+
+      if (!user) {
+        return res.status(404).json({
+          message: "Пользователь не найден",
+        });
+      }
+
+      return res.status(200).json({
+        message: `Вы в чате с ${user.login}`,
+        user: {
+          id: user.id,
+          login: user.login,
+          role: user.role,
+          avatar: user.avatar,
+        },
+      });
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({
+        message: "Ошибка поиска чата",
+        error: e.message,
+      });
+    }
+  }
 }
 
 module.exports = new ChatController();
