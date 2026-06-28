@@ -25,7 +25,7 @@
           class="btn btn-primary"
           type="button"
           id="button-addon2"
-          @click="sendMessage()"
+          @click="send(messageInput)"
           >
           <i class="bi bi-send me-2"></i>
           Отправить
@@ -37,16 +37,17 @@
 
 <script setup>
 import { useChatStore } from '@/stores/chatStore';
-import { io } from 'socket.io-client';
+import { useUserStore } from '@/stores/userStore';
+import { sendMessage } from '@/plugins/useSocket';
 import { ref } from 'vue';
 
-const socket = io('http://localhost:3000');
 
 const chatStore = useChatStore();
+const userStore = useUserStore();
 const messageInput = ref('');
 
-const sendMessage = async () => {
-    socket.emit('chat message', messageInput.value);
+const send = async (message) => {
+    sendMessage(message, userStore.user.id, chatStore.messageToUser.chat_id)
     messageInput.value = '';
 }
 

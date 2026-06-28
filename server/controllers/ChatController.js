@@ -145,6 +145,7 @@ class ChatController {
         message: `Вы в чате с ${user.login}`,
         user: {
           id: user.id,
+          chat_id: Number(chatId),
           login: user.login,
           role: user.role,
           avatar: user.avatar,

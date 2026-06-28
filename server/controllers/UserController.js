@@ -3,13 +3,17 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 
-const tokenGen = (res, email, login, role) => {
-  const generateToken = jwt.sign({ email, login, role }, process.env.JWT_KEY, {
-    expiresIn: "24h",
-  });
+const tokenGen = (res, id, email, login, role) => {
+  const generateToken = jwt.sign(
+    { id, email, login, role },
+    process.env.JWT_KEY,
+    {
+      expiresIn: "24h",
+    },
+  );
 
   res.cookie("token", generateToken, {
-    httpOnly: true,
+    httpOnly: false,
     secure: false,
     sameSite: "lax",
     maxAge: 24 * 60 * 60 * 1000,
@@ -43,7 +47,7 @@ class UserController {
         role: "user",
       });
 
-      const token = tokenGen(res, user.email, user.login, user.role);
+      const token = tokenGen(res, user.id, user.email, user.login, user.role);
 
       return res.json({
         message: "Успешная регистрация",
@@ -79,7 +83,7 @@ class UserController {
         });
       }
 
-      const token = tokenGen(res, user.email, user.login, user.role);
+      const token = tokenGen(res, user.id, user.email, user.login, user.role);
 
       return res.json({
         message: "Успешная авторизация",

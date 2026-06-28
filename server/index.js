@@ -10,6 +10,7 @@ const os = require("os");
 const router = require("./routes/index");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const SocketController = require("./controllers/SocketController");
 
 const sequelize = require("./db");
 const models = require("./models/model");
@@ -25,20 +26,13 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
   allowEIO3: true,
+  transports: ["websocket", "polling"],
 });
 
+const socketController = new SocketController(io);
+
 io.on("connection", (socket) => {
-  console.log(`a ${os.hostname()} connected`);
-
-  socket.on("chat message", (msg) => {
-    console.log("message: " + msg);
-
-    io.emit("chat message", {
-      id: socket.id,
-      message: msg,
-      timestamp: new Date(),
-    });
-  });
+  socketController.handleConnection(socket);
 });
 
 app.use(cookieParser());
